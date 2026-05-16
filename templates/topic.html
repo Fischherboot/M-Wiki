@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}{{ topic.title }} &middot; {{ wiki_title }}{% endblock %}
+
+{% block content %}
+<article class="topic">
+    <div class="topic-head">
+        <div class="breadcrumb">
+            <a href="/">Start</a>
+            {% if topic.category_name %}
+                &rsaquo; <a href="/category/{{ topic.category_id }}">{{ topic.category_name }}</a>
+            {% endif %}
+            &rsaquo; <span>{{ topic.title }}</span>
+        </div>
+        <h1 class="topic-title">{{ topic.title }}</h1>
+        <div class="topic-meta">
+            <span>angelegt {{ topic.created_at[:16].replace('T', ' ') }}</span>
+            {% if topic.author %}<span>&middot; von {{ topic.author }}</span>{% endif %}
+            <span>&middot; zuletzt bearbeitet {{ topic.updated_at[:16].replace('T', ' ') }}</span>
+        </div>
+        <div class="topic-actions">
+            <a href="/topic/{{ topic.id }}/edit" class="btn">Bearbeiten</a>
+            <form action="/topic/{{ topic.id }}/delete" method="post" class="inline-form"
+                  onsubmit="return confirm('Wirklich löschen? Kommentare gehen mit.');">
+                <button type="submit" class="btn btn-danger">Löschen</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="topic-body">
+        {% if rendered %}
+            {{ rendered|safe }}
+        {% else %}
+            <p class="muted"><em>Noch kein Inhalt. <a href="/topic/{{ topic.id }}/edit">Bearbeiten</a>.</em></p>
+        {% endif %}
+    </div>
+
+    <section id="comments" class="comments">
+        <h2 class="section-title">Kommentare <span class="muted">({{ comments|length }})</span></h2>
+
+        {% if comments %}
+        <ul class="comment-list">
+            {% for c in comments %}
+            <li class="comment">
+                <div class="comment-head">
+                    <strong>{{ c.author }}</strong>
+                    <span class="muted small">{{ c.created_at[:16].replace('T', ' ') }}</span>
+                    <form action="/comment/{{ c.id }}/delete" method="post" class="inline-form"
+                          onsubmit="return confirm('Kommentar löschen?');">
+                        <button type="submit" class="btn-link danger" title="Löschen">×</button>
+                    </form>
+                </div>
+                <div class="comment-body">{{ c.content }}</div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <form action="/topic/{{ topic.id }}/comment" method="post" class="comment-form">
+            <textarea name="content" rows="3" placeholder="Kommentar schreiben…" required></textarea>
+            <button type="submit" class="btn">Kommentieren</button>
+        </form>
+    </section>
+</article>
+{% endblock %}

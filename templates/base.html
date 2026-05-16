@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#0a0a0c">
+    <title>{% block title %}{{ wiki_title }}{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="layout">
+        <header class="topbar">
+            <div class="topbar-left">
+                <a href="/" class="brand">
+                    <span class="brand-name">{{ wiki_title }}</span>
+                </a>
+            </div>
+            <form action="/search" method="get" class="searchbar" role="search">
+                <input type="search" name="q" placeholder="Wiki durchsuchen…" value="{{ q or '' }}" autocomplete="off">
+                <button type="submit" aria-label="Suchen">⌕</button>
+            </form>
+            <div class="topbar-right">
+                <a href="/topic/new" class="btn btn-ghost">+ Neues Topic</a>
+                {% if user %}
+                <span class="userbox">
+                    <span class="dot"></span>{{ user }}
+                    <a href="/logout" class="logout">abmelden</a>
+                </span>
+                {% endif %}
+            </div>
+        </header>
+
+        <div class="main">
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Kategorien</div>
+                    {% if tree.roots %}
+                        <ul class="cat-tree">
+                            {% for c in tree.roots %}
+                                {% include "_cat_node.html" %}
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="muted small">Keine Kategorien.</p>
+                    {% endif %}
+
+                    <form action="/category/new" method="post" class="newcat">
+                        <input type="text" name="name" placeholder="Neue Kategorie…" required maxlength="100">
+                        <button type="submit" title="Anlegen">+</button>
+                    </form>
+                </div>
+
+                {% if tree.uncategorized %}
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Ohne Kategorie</div>
+                    <ul class="topic-list">
+                        {% for t in tree.uncategorized %}
+                        <li><a href="/topic/{{ t.id }}">{{ t.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="sidebar-section sidebar-meta">
+                    <a href="/app/" class="mobile-link" id="goMobileLink">📱 Mobile App</a>
+                </div>
+            </aside>
+
+            <main class="content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+
+        <footer class="footer">
+            <span>343.im/MWIKI</span>
+            <span class="sep">|</span>
+            <span>Moritzsoft &copy;</span>
+            <span class="sep">|</span>
+            <span>Dieses Wiki ist Intern, und sollte nicht geteilt werden.</span>
+        </footer>
+    </div>
+    <script>
+        // "Mobile App" Link: lösche den "prefer_desktop"-Cookie damit beim
+        // nächsten Besuch von / wieder zum mobile Layout umgeleitet wird.
+        (function () {
+            var lnk = document.getElementById("goMobileLink");
+            if (lnk) {
+                lnk.addEventListener("click", function () {
+                    document.cookie = "prefer_desktop=; path=/; max-age=0; samesite=lax";
+                });
+            }
+        })();
+    </script>
+    <script src="/static/wiki.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Login &middot; {{ wiki_title }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="login-body">
+    <div class="login-wrap">
+        <h1 class="login-title">{{ wiki_title }}</h1>
+        <p class="login-sub">Anmeldung erforderlich</p>
+
+        <form method="post" action="/login" class="login-form">
+            <input type="hidden" name="next" value="{{ next }}">
+            <label>
+                <span>Benutzer</span>
+                <input type="text" name="username" autocomplete="username" autofocus required>
+            </label>
+            <label>
+                <span>Passwort</span>
+                <input type="password" name="password" autocomplete="current-password" required>
+            </label>
+            {% if error %}
+            <div class="login-error">{{ error }}</div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Anmelden</button>
+        </form>
+
+        <footer class="login-footer">
+            <span>343.im/MWIKI</span>
+            <span class="sep">|</span>
+            <span>Moritzsoft &copy;</span>
+            <span class="sep">|</span>
+            <span>Dieses Wiki ist Intern, und sollte nicht geteilt werden.</span>
+        </footer>
+    </div>
+</body>
+</html>

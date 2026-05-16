@@ -1,0 +1,19 @@
+<li>
+    <details {% if c.children or c.topics %}open{% endif %}>
+        <summary><a href="/category/{{ c.id }}">{{ c.name }}</a> <span class="count">{{ c.topics|length }}</span></summary>
+        {% if c.topics %}
+            <ul class="topic-list">
+                {% for t in c.topics %}
+                <li><a href="/topic/{{ t.id }}">{{ t.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if c.children %}
+            <ul class="cat-tree subtree">
+                {% for c in c.children %}
+                    {% include "_cat_node.html" %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </details>
+</li>

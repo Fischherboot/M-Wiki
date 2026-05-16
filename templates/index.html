@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+    <h1 class="hero-title">{{ wiki_title }}</h1>
+    <p class="hero-sub">Internes Wiki &middot; {{ topic_count }} Topic{{ '' if topic_count == 1 else 's' }} in {{ cat_count }} Kategorie{{ '' if cat_count == 1 else 'n' }}</p>
+</section>
+
+<section class="card">
+    <h2 class="section-title">Zuletzt bearbeitet</h2>
+    {% if recent %}
+        <ul class="recent-list">
+            {% for t in recent %}
+            <li>
+                <a href="/topic/{{ t.id }}" class="recent-title">{{ t.title }}</a>
+                <span class="muted small">{{ t.updated_at[:16].replace('T', ' ') }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="muted">Noch keine Topics. <a href="/topic/new">Eines erstellen?</a></p>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h2 class="section-title">Hinweise</h2>
+    <ul class="info-list">
+        <li>Topics verlinken: <code>[[Topic Titel]]</code> oder <code>[[Topic Titel|Anzeigetext]]</code></li>
+        <li>Beim Schreiben werden passende Topics automatisch vorgeschlagen.</li>
+        <li>Markdown wird unterstützt: Überschriften, Listen, Code-Blöcke, Tabellen.</li>
+        <li>Bilder hochladen per Drag &amp; Drop in den Editor.</li>
+    </ul>
+</section>
+{% endblock %}

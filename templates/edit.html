@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}{% if mode == 'new' %}Neues Topic{% else %}Bearbeiten &middot; {{ topic.title }}{% endif %} &middot; {{ wiki_title }}{% endblock %}
+
+{% block content %}
+<article class="topic">
+    <h1 class="topic-title">{% if mode == 'new' %}Neues Topic{% else %}{{ topic.title }} bearbeiten{% endif %}</h1>
+
+    <form method="post" action="{% if mode == 'new' %}/topic/new{% else %}/topic/{{ topic.id }}/edit{% endif %}" class="edit-form" id="editForm">
+        <label class="field">
+            <span class="field-label">Titel</span>
+            <input type="text" name="title" value="{{ topic.title }}" required maxlength="200" id="titleInput">
+        </label>
+
+        <label class="field">
+            <span class="field-label">Kategorie</span>
+            <select name="category_id">
+                <option value="">— ohne —</option>
+                {% for c in cats %}
+                <option value="{{ c.id }}" {% if topic.category_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <div class="editor-grid">
+            <label class="field field-content">
+                <span class="field-label">
+                    Inhalt
+                    <span class="muted small">Markdown + <code>[[Wikilinks]]</code>. Bilder per Drag &amp; Drop einfügen.</span>
+                </span>
+                <textarea name="content" id="contentArea" rows="22" spellcheck="false" maxlength="200000" placeholder="Schreib was…">{{ topic.content }}</textarea>
+            </label>
+
+            <aside class="suggestion-panel">
+                <h3>Vorgeschlagene Verlinkungen</h3>
+                <p class="muted small">Existierende Topic-Titel in deinem Text:</p>
+                <ul id="suggestions" class="suggestion-list">
+                    <li class="muted small">Beim Tippen werden hier passende Topics angezeigt.</li>
+                </ul>
+                <h3 style="margin-top: 1.5em;">Bild hochladen</h3>
+                <label class="upload-zone" id="uploadZone">
+                    <input type="file" id="imageUpload" accept="image/*" hidden>
+                    <span>Datei wählen oder hier ablegen</span>
+                </label>
+                <p class="muted small" id="uploadStatus"></p>
+            </aside>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">{% if mode == 'new' %}Anlegen{% else %}Speichern{% endif %}</button>
+            <a href="{% if mode == 'new' %}/{% else %}/topic/{{ topic.id }}{% endif %}" class="btn btn-ghost">Abbrechen</a>
+        </div>
+    </form>
+</article>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.MWIKI_TOPIC_ID = {{ topic.id if topic.id else 'null' }};
+    initEditor();
+</script>
+{% endblock %}

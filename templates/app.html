@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#0a0a0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>{{ wiki_title }}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+    <header class="app-header">
+        <button class="iconbtn" id="navToggle" aria-label="Menü">☰</button>
+        <h1 class="app-title" id="appTitle">{{ wiki_title }}</h1>
+        <button class="iconbtn" id="searchToggle" aria-label="Suchen">⌕</button>
+    </header>
+
+    <div class="app-search hidden" id="searchBar">
+        <input type="search" id="searchInput" placeholder="Wiki durchsuchen…" autocomplete="off">
+    </div>
+
+    <div class="app-drawer hidden" id="drawer" aria-hidden="true">
+        <div class="drawer-backdrop" id="drawerBackdrop"></div>
+        <nav class="drawer-panel" aria-label="Navigation">
+            <div class="drawer-head">
+                <div class="user-row">
+                    <span class="dot"></span><span>{{ user }}</span>
+                    <button class="drawer-close" id="drawerClose" aria-label="Menü schließen">×</button>
+                </div>
+                <button class="drawer-action" data-route="home">🏠 Startseite</button>
+                <button class="drawer-action" data-route="new">＋ Neues Topic</button>
+                <a href="/?d=1" class="drawer-action" id="goDesktopLink">↗ Desktop-Version</a>
+                <a href="/logout" class="drawer-action drawer-action-muted">⎋ Abmelden</a>
+            </div>
+            <div class="drawer-tree" id="drawerTree"></div>
+        </nav>
+    </div>
+
+    <main class="app-main" id="appMain">
+        <div class="loader">Lade…</div>
+    </main>
+
+    <footer class="app-footer">
+        <span>343.im/MWIKI</span>
+        <span class="sep">|</span>
+        <span>Moritzsoft &copy;</span>
+        <span class="sep">|</span>
+        <span>Intern – nicht teilen</span>
+    </footer>
+
+    <script>
+        window.WIKI_TITLE = {{ wiki_title|tojson }};
+        window.USERNAME = {{ user|tojson }};
+    </script>
+    <script src="/static/app.js"></script>
+</body>
+</html>

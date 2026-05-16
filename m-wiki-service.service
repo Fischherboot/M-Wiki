@@ -1,0 +1,56 @@
+# =============================================================================
+# Reference systemd unit für M-WIKI
+# install.sh generiert das hier automatisch, das ist nur für manuelle Setups.
+# Pfade ggf. anpassen.
+# =============================================================================
+
+[Unit]
+Description=M-WIKI (Moritzsoft internes Wiki)
+Documentation=https://343.im/MWIKI
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=mwiki
+Group=mwiki
+WorkingDirectory=/opt/mwiki
+Environment="PYTHONUNBUFFERED=1"
+Environment="HOST=0.0.0.0"
+Environment="PORT=3553"
+ExecStart=/opt/mwiki/venv/bin/uvicorn main:app \
+    --host ${HOST} \
+    --port ${PORT} \
+    --proxy-headers \
+    --forwarded-allow-ips=*
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=m-wiki-service
+
+# --- Security hardening ----------------------------------------------------
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectHostname=true
+ProtectClock=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+
+ReadWritePaths=/opt/mwiki
+
+[Install]
+WantedBy=multi-user.target

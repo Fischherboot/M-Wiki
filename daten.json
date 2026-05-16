@@ -1,0 +1,10 @@
+{
+  "wiki_title": "Mein Wiki",
+  "session_secret": "REPLACE CHEFFE OIDA",
+  "users": [
+    {
+      "username": "schmoritz",
+      "password": "is des n Passwort?"
+    }
+  ]
+}

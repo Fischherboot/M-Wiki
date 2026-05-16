@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Suche: {{ q }} &middot; {{ wiki_title }}{% endblock %}
+
+{% block content %}
+<article class="topic">
+    <h1 class="topic-title">Suche</h1>
+    <form action="/search" method="get" class="searchbar searchbar-large">
+        <input type="search" name="q" placeholder="Wiki durchsuchen…" value="{{ q }}" autofocus>
+        <button type="submit">Suchen</button>
+    </form>
+
+    {% if q %}
+        <p class="muted">{{ results|length }} Treffer für „{{ q }}“</p>
+        {% if results %}
+        <ul class="search-results">
+            {% for r in results %}
+            <li>
+                <a href="/topic/{{ r.id }}" class="recent-title">{{ r.title }}</a>
+                {% if r.snippet %}<div class="snippet muted">…{{ r.snippet }}…</div>{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="muted">Nichts gefunden.</p>
+        {% endif %}
+    {% endif %}
+</article>
+{% endblock %}

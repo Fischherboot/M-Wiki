@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}{{ cat.name }} &middot; {{ wiki_title }}{% endblock %}
+
+{% block content %}
+<article class="topic">
+    <div class="topic-head">
+        <div class="breadcrumb">
+            <a href="/">Start</a>
+            {% if parent %} &rsaquo; <a href="/category/{{ parent.id }}">{{ parent.name }}</a>{% endif %}
+            &rsaquo; <span>{{ cat.name }}</span>
+        </div>
+        <h1 class="topic-title">{{ cat.name }}</h1>
+        <div class="topic-actions">
+            <form action="/category/{{ cat.id }}/edit" method="post" class="inline-rename">
+                <input type="text" name="name" value="{{ cat.name }}" required>
+                <button type="submit" class="btn">Umbenennen</button>
+            </form>
+            <form action="/category/new" method="post" class="inline-form">
+                <input type="hidden" name="parent_id" value="{{ cat.id }}">
+                <input type="text" name="name" placeholder="Unterkategorie…" required>
+                <button type="submit" class="btn">+ Unter</button>
+            </form>
+            <form action="/category/{{ cat.id }}/delete" method="post" class="inline-form"
+                  onsubmit="return confirm('Kategorie und alle darunterliegenden Unterkategorien löschen? Topics werden in „Ohne Kategorie“ verschoben.');">
+                <button type="submit" class="btn btn-danger">Löschen</button>
+            </form>
+        </div>
+    </div>
+
+    {% if subcats %}
+    <section class="card">
+        <h2 class="section-title">Unterkategorien</h2>
+        <ul class="info-list">
+            {% for s in subcats %}
+            <li><a href="/category/{{ s.id }}">{{ s.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    <section class="card">
+        <h2 class="section-title">Topics</h2>
+        {% if topics %}
+        <ul class="recent-list">
+            {% for t in topics %}
+            <li>
+                <a href="/topic/{{ t.id }}" class="recent-title">{{ t.title }}</a>
+                <span class="muted small">{{ t.updated_at[:16].replace('T', ' ') }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="muted">Keine Topics in dieser Kategorie. <a href="/topic/new">Eines anlegen?</a></p>
+        {% endif %}
+    </section>
+</article>
+{% endblock %}
